@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="icon/radar.ico" type="image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Cesium.js"></script>
+    <script type="module" src="functions/cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>ISS Radar</title>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <div class="loading-screen">
+        <div class="loading-icon"></div>
+        <div class="loading-text"><h1>
+            Loading...
+        </h1></div>
+    </div>
+
+    <button class="view-button">
+        🌍
+    </button>
+
+    <div id="popup" style="display: none; z-index: 1000;">
+        <h2 translate="no">ISS</h2>
+        <div class="popup-content">
+            <h4><strong>Time:</strong> <span id="time"></span></h4>
+            <h4><strong>Latitude:</strong> <span id="latitude"></span></h4>
+            <h4><strong>Longitude:</strong> <span id="longitude"></span></h4>
+            <h4><strong>Altitude:</strong> <span id="altitude"></span></h4>
+            <h4><strong>Velocity:</strong> <span id="velocity"></span></h4>
+            <h4><strong>Visibility:</strong> <span translate="no" id="visibility"></span></h4>
+        </div>
+        <div id="popup-arrow"></div> <!-- Punta del popup -->
+    </div>
+
+    <div id="info-container">
+        <div class="align-info-content">
+            <h2 translate="no">ISS</h2>
+            <div class="info-content">
+                <h4><strong>Time:</strong> <span id="info-time"></span></h4>
+            <div class="position-info-container">
+            <h4><strong>Latitude:</strong> <span id="info-latitude">0.00000000°</span></h4>
+            <h4><strong>Longitude:</strong> <span id="info-longitude">0.00000000°</span></h4>
+            <svg class="copy-button" xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="#FFFFFF"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
+            </div>
+                <h4><strong>Altitude:</strong> <span id="info-altitude">0.00000000°</span></h4>
+                <h4><strong>Velocity:</strong> <span id="info-velocity"></span></h4>
+                <h4><strong>Country</strong> <span id="info-country"></span></h4>
+                <h4><strong>Visibility:</strong> <span translate="no" id="info-visibility"></span></h4>
+                <button id="googleMaps">Google Maps</button>
+            </div>
+        </div>
+        <div id="infobox-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" ><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
+        </div>
+    </div>
+
+    
+    
+    <link rel="stylesheet" href="cesium.css">
+    <script src="functions/index.js"></script>
+    <script src="functions/time.js"></script>
+</body>
+</html>

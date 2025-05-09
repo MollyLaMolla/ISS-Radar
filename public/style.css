@@ -1,0 +1,340 @@
+body{
+    margin: 0;
+    overflow: hidden;
+}
+
+#cesiumContainer{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.cesium-viewer-animationContainer{
+    display: none;
+}
+
+.cesium-viewer-timelineContainer{
+    display: none;
+}
+
+.cesium-viewer-bottom{
+    display: none;
+}
+
+.cesium-viewer-toolbar{
+    display: none;
+}
+
+.cesium-viewer-fullscreenContainer{
+    display: none;
+}
+
+.loading-screen{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(41, 36, 36);
+    z-index: 1000;
+}
+
+.loading-screen h1{
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.loading-icon {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+#popup {
+    position: absolute;
+    font-family: Arial, sans-serif;
+    display:  flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    height: 208px;
+    width: 170px;
+    background-color: rgba(255, 255, 255, 0.75);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    user-select: none;
+}
+
+#popup-arrow {
+    position: absolute;
+    top: -10px; /* Posiziona la punta sotto il popup */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid rgba(255, 255, 255, 0.75);
+}
+
+#popup h2 {
+    font-weight: 900;
+    margin: 0;
+    font-size: 24px;
+}
+
+.popup-content {
+    margin: 20px 0;
+}
+
+.popup-content h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.view-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid tomato;
+    font-size: 32px;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 3; /* Assicurati che il pulsante sia sopra gli altri elementi */
+    user-select: none;
+}
+
+.view-button:hover {
+    background-color: tomato;
+    transition: all 0.3s ease;
+}
+
+
+#info-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    left: -382px; /* Posiziona il contenitore a sinistra dello schermo */
+    height: 100%; /* Altezza del contenitore */
+    width: 300px;
+    gap: 40px;
+    padding: 0 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 3; /* Assicurati che il contenitore sia sopra gli altri elementi */
+    border-right: 2px solid tomato;
+    font-family:sans-serif;
+}
+
+#info-container h2{
+    margin: 0;
+    font-size: 4rem;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: tomato;
+}
+
+.align-info-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.align-info-content h4{
+    margin: 0;
+    margin-left: 20px;
+    font-size: 14pt;
+}
+
+.position-info-container h4{
+    margin: 0;
+}
+
+.align-info-content span{
+    font-size: 12pt;
+}
+
+.info-content{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid rgba(255, 99, 71, 1);
+    padding: 20px 10px 10px 10px;
+    border-radius: 8px;
+    width: calc(100% - 20px);
+}
+
+.position-info-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid rgba(255, 99, 71, 1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+
+.copy-button{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: 1px solid tomato;
+    fill: tomato;
+    border-radius: 8px;
+    padding: 4px 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.copy-button:hover {
+    background-color: tomato;
+    transition: all 0.3s ease;
+    fill: white;
+}
+
+
+
+#googleMaps{
+    background-color: white;
+    color: tomato;
+    border: 1px solid tomato;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#googleMaps:hover{
+    background-color: tomato;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+
+#infobox-arrow {
+    position: absolute;
+    right: -35px;
+    top: calc(50% - 37px); /* Centra verticalmente l'arrow */
+    width: 33px;
+    height: 70px;
+    background: white;
+    cursor: pointer;
+    border-radius: 0 35px 35px 0; /* Crea il mezzo cerchio */
+    fill: tomato;
+    border-width: 2px;
+    border-left: 0px;
+    border-color:  tomato;
+    border-style: solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotateY(0deg); /* Ruota l'elemento per mostrare il bordo destro */
+}
+
+#infobox-arrow:hover {
+    background-color: tomato !important;
+    fill: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.cesium-performanceDisplay-defaultContainer{
+    right: 86px;
+    top: 10px;
+    height: 63px ;
+    width: 120px;
+}
+
+.cesium-performanceDisplay{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 22px);
+    width: calc(100% - 22px);
+    padding: 10px;
+    font-size: 10pt;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid tomato;
+    user-select: none;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (hover: none) {
+    /* Disattiva effetti hover per dispositivi touch */
+    #infobox-arrow:hover {
+        background-color: white !important;
+        fill: tomato !important;
+    }
+
+    .view-button:hover {
+        background-color: white !important;
+    }
+
+    .copy-button:hover {
+        background-color: white !important;
+        fill: tomato !important;
+    }
+}
+
+@media (max-height: 550px){
+    .align-info-content{
+        transform: scale(0.8);
+    }
+
+    #info-container{
+        width: 250px;
+        left: -332px;
+    }
+}
+
+@media (max-height: 450px){
+    .align-info-content{
+        transform: scale(0.8);
+    }
+
+    #info-container h2{
+        font-size: 2rem;
+    }
+
+    #info-container h4{
+        font-size: 10pt;
+    }
+
+    #info-container{
+        width: 230px;
+        left: -312px;
+    }
+}
+
+@media (max-width: 390px){
+    #info-container{
+        width: 250px;
+        left: -332px;
+    }
+}

@@ -1,0 +1,6 @@
+# Ignora i file di configurazione dell'ambiente
+.env
+.DS_Store
+
+# Ignora la cartella dei pacchetti di dipendenze (per Node.js)
+node_modules/
