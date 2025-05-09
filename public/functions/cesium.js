@@ -1,39 +1,30 @@
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwOTMwZjFiMS01ZmE3LTQyZWUtYTFiZS03OGI4M2E3NDA1N2UiLCJpZCI6Mjk5NDc3LCJpYXQiOjE3NDYzOTc2MjR9.c9q7kSWbKbK0mUa35bGED-1-wjE_uJHJxjbgT6FShmA';
 
-const viewer = new Cesium.Viewer('cesiumContainer');
+const viewer = new Cesium.Viewer("cesiumContainer");
 viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.WHEEL);
 viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 viewer.scene.screenSpaceCameraController.enableZoom = false;
 
-const cesiumContainer = document.getElementById('cesiumContainer');
-const googleMapsButton = document.getElementById('googleMaps');
-
-
+const cesiumContainer = document.getElementById("cesiumContainer");
+const googleMapsButton = document.getElementById("googleMaps");
 
 // Rileva se il dispositivo è touch
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
 if (isTouchDevice) {
-    // Riattiva lo zoom predefinito per i dispositivi touch
-    cesiumContainer.removeEventListener('wheel', customZoomHandler);
+    cesiumContainer.removeEventListener("wheel", customZoomHandler);
     viewer.scene.screenSpaceCameraController.enableZoom = true;
 } else {
-    // Mantieni lo zoom personalizzato per i dispositivi non touch
-    cesiumContainer.addEventListener('wheel', customZoomHandler);
+    cesiumContainer.addEventListener("wheel", customZoomHandler);
     viewer.scene.screenSpaceCameraController.enableZoom = false;
 }
 
 // Funzione per gestire lo zoom personalizzato
 function customZoomHandler(event) {
     event.preventDefault(); // Previeni il comportamento predefinito del browser
-
-    // Calcola la direzione dello zoom
     const zoomDirection = event.deltaY > 0 ? 1 : -1;
-
-    // Calcola la quantità di zoom personalizzata
     const zoomAmount = zoomDirection * viewer.scene.camera.positionCartographic.height / 20;
 
-    // Applica lo zoom
     if (zoomDirection > 0) {
         viewer.scene.camera.zoomIn(-zoomAmount);
     } else {
@@ -57,7 +48,7 @@ let popupUpdateHandle = null; // Variabile per gestire il ciclo di aggiornamento
 
 googleMapsButton.addEventListener("click", function () {
     const userLang = navigator.language || navigator.userLanguage; // Ottieni la lingua dell'utente
-    const langCode = userLang.split('-')[0]; // Estrai il codice della lingua (es. 'it', 'uk', 'ru')
+    const langCode = userLang.split("-")[0]; // Estrai il codice della lingua (es. 'it', 'uk', 'ru')
     const url = `https://www.google.com/maps/@${preciseLat},${preciseLon},15z?hl=${langCode}`;
     window.open(url, "_blank");
 });
@@ -65,7 +56,7 @@ googleMapsButton.addEventListener("click", function () {
 viewer.screenSpaceEventHandler.setInputAction(function (movement) {
     const pickedObject = viewer.scene.pick(movement.position);
     // Controlla se l'oggetto cliccato è la ISS
-    if (pickedObject && pickedObject.id && pickedObject.id._id === 'issEntity') {
+    if (pickedObject && pickedObject.id && pickedObject.id._id === "issEntity") {
         // Ottieni la posizione della ISS in coordinate WGS84
         const position = pickedObject.id.position.getValue(Cesium.JulianDate.now());
         if (!position) {
@@ -74,35 +65,35 @@ viewer.screenSpaceEventHandler.setInputAction(function (movement) {
 
         // Converti la posizione in coordinate dello schermo
         const screenPosition = viewer.scene.cartesianToCanvasCoordinates(position);
-        const popupWidth = $('#popup').width();
+        const popupWidth = $("#popup").width();
         const popupCenterPosition = {
             x: screenPosition.x - popupWidth / 2,
-            y: screenPosition.y + 100// Offset per centrare il popup
+            y: screenPosition.y + 100 // Offset per centrare il popup
         };
         if (!screenPosition) {
             return;
         }
 
         // Mostra il popup
-        const popup = document.getElementById('popup');
-        const popupVelocity = document.getElementById('velocity');
-        const popupVisibility = document.getElementById('visibility');
-        const popupAltitude = document.getElementById('altitude');
-        const popupLatitude = document.getElementById('latitude');
-        const popupLongitude = document.getElementById('longitude');
-        const popupTime = document.getElementById('time');
+        const popup = document.getElementById("popup");
+        const popupVelocity = document.getElementById("velocity");
+        const popupVisibility = document.getElementById("visibility");
+        const popupAltitude = document.getElementById("altitude");
+        const popupLatitude = document.getElementById("latitude");
+        const popupLongitude = document.getElementById("longitude");
+        const popupTime = document.getElementById("time");
         const cartographic = Cesium.Cartographic.fromCartesian(position);
         const latitude = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
         const longitude = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
         const altitude = (cartographic.height / 1000).toFixed(3); // Altitudine in km
-        const velocity = Number(issDatas.velocity.toFixed(0)).toLocaleString('it-IT'); // Velocità in km/h
+        const velocity = Number(issDatas.velocity.toFixed(0)).toLocaleString("it-IT"); // Velocità in km/h
         const time = Math.floor(Date.now() / 1000); // Tempo in secondi
         const userTimeZoneOffset = new Date().getTimezoneOffset() * 60; // Offset in seconds
         const userTime = time - userTimeZoneOffset; // Adjust time to user's timezone
         const userHours = Math.floor(userTime / 3600) % 24; // Ore
         const userMinutes = Math.floor((userTime % 3600) / 60); // Minuti
         const userSeconds = userTime % 60; // Secondi
-        const formattedUserTime = `${String(userHours).padStart(2, '0')}:${String(userMinutes).padStart(2, '0')}:${String(userSeconds).padStart(2, '0')}`;
+        const formattedUserTime = `${String(userHours).padStart(2, "0")}:${String(userMinutes).padStart(2, "0")}:${String(userSeconds).padStart(2, "0")}`;
         const visibility = issDatas.visibility; // Visibilità in km
         popupTime.innerHTML = `${formattedUserTime}`;
         popupLatitude.innerHTML = `${latitude}°`;
@@ -113,7 +104,7 @@ viewer.screenSpaceEventHandler.setInputAction(function (movement) {
 
         popup.style.left = `${popupCenterPosition.x}px`;
         popup.style.top = `${popupCenterPosition.y}px`;
-        popup.style.display = 'flex';
+        popup.style.display = "flex";
         startPopupUpdate(); // Avvia l'aggiornamento della posizione del popup
     } else {
         stopPopupUpdate(); // Ferma l'aggiornamento e nascondi il popup
@@ -121,13 +112,13 @@ viewer.screenSpaceEventHandler.setInputAction(function (movement) {
 }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 function updateInfoContainer(data, firstStart, countryData) {
-    const infoTime = document.getElementById('info-time');
-    const infoVelocity = document.getElementById('info-velocity');
-    const infoVisibility = document.getElementById('info-visibility');
-    const infoCountry = document.getElementById('info-country');
-    const infoVelocityValue =  Number(data.velocity.toFixed(0)).toLocaleString('it-IT'); // Velocità in km/h
+    const infoTime = document.getElementById("info-time");
+    const infoVelocity = document.getElementById("info-velocity");
+    const infoVisibility = document.getElementById("info-visibility");
+    const infoCountry = document.getElementById("info-country");
+    const infoVelocityValue = Number(data.velocity.toFixed(0)).toLocaleString("it-IT"); // Velocità in km/h
     const infoVisibilityValue = data.visibility;
-    
+
     var infoCountryValue;
     if (countryData === "??") {
         infoCountryValue = "Sea"; // Paese
@@ -138,9 +129,9 @@ function updateInfoContainer(data, firstStart, countryData) {
     infoVisibility.innerHTML = `${infoVisibilityValue}`;
     infoCountry.innerHTML = `${infoCountryValue}`; // Paese
     if (firstStart) {
-        const infoLatitude = document.getElementById('info-latitude');
-        const infoLongitude = document.getElementById('info-longitude');
-        const infoAltitude = document.getElementById('info-altitude');
+        const infoLatitude = document.getElementById("info-latitude");
+        const infoLongitude = document.getElementById("info-longitude");
+        const infoAltitude = document.getElementById("info-altitude");
         const infoLatitudeValue = data.latitude.toFixed(4);
         const infoLongitudeValue = data.longitude.toFixed(4);
         const infoAltitudeValue = data.altitude.toFixed(3); // Converti in km
@@ -150,10 +141,10 @@ function updateInfoContainer(data, firstStart, countryData) {
     }
 }
 
-function updateInfoContainerPosition(data){
-    const infoLatitude = document.getElementById('info-latitude');
-    const infoLongitude = document.getElementById('info-longitude');
-    const infoAltitude = document.getElementById('info-altitude');
+function updateInfoContainerPosition(data) {
+    const infoLatitude = document.getElementById("info-latitude");
+    const infoLongitude = document.getElementById("info-longitude");
+    const infoAltitude = document.getElementById("info-altitude");
     const infoLatitudeValue = data.latitude.toFixed(8);
     const infoLongitudeValue = data.longitude.toFixed(8);
     const infoAltitudeValue = data.altitude.toFixed(3); // Converti in km
@@ -174,27 +165,27 @@ document.getElementsByClassName("view-button")[0].addEventListener("click", func
         viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(preciseLon, preciseLat, preciseAlt * 1000 + 10000000),
             duration: 2,
-            complete: function() {
+            complete: function () {
                 viewer.scene.screenSpaceCameraController.enableRotate = true; // Riabilita la rotazione
                 traveling = false; // Ripristina lo stato del viaggio
                 document.getElementsByClassName("view-button")[0].innerHTML = "🌍"; // Cambia il testo del pulsante
             }
         });
     } else {
-        const issEntity = viewer.entities.getById('issEntity');
+        const issEntity = viewer.entities.getById("issEntity");
         if (issEntity) {
             viewer.trackedEntity = issEntity; // Abilita il tracciamento dell'entità
             viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees(preciseLon, preciseLat, preciseAlt * 1000 + 1000000),
                 duration: 2,
-                complete: function() {
+                complete: function () {
                 }
             });
             setTimeout(() => {
                 viewer.camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(preciseLon, preciseLat, preciseAlt * 1000 + 1000000),
                     duration: 0,
-                    complete: function() {
+                    complete: function () {
                         traveling = false; // Ripristina lo stato del viaggio
                         document.getElementsByClassName("view-button")[0].innerHTML = "🛰️"; // Cambia il testo del pulsante
                     }
@@ -287,7 +278,7 @@ async function updateISSPositionOnServer() {
     const { lat, lon, alt } = issData;
 
     // Aggiorna la posizione della ISS su Cesium
-    const issEntity = viewer.entities.getById('issEntity');
+    const issEntity = viewer.entities.getById("issEntity");
     if (issEntity) {
         issEntity.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt * 1000);
     }
@@ -297,7 +288,7 @@ async function updateISSPositionOnServer() {
 updateISSPositionOnServer();
 
 function updatePopupPosition() {
-    const issEntity = viewer.entities.getById('issEntity');
+    const issEntity = viewer.entities.getById("issEntity");
     if (!issEntity) return;
 
     // Ottieni la posizione della ISS in coordinate WGS84
@@ -306,33 +297,33 @@ function updatePopupPosition() {
 
     // Converti la posizione in coordinate dello schermo
     const screenPosition = viewer.scene.cartesianToCanvasCoordinates(position);
-    const popupWidth = $('#popup').width();
+    const popupWidth = $("#popup").width();
     const popupCenterPosition = {
         x: screenPosition.x - popupWidth / 2,
-        y: screenPosition.y + 100// Offset per centrare il popup
+        y: screenPosition.y + 100 // Offset per centrare il popup
     };
     if (!screenPosition) return;
 
     // Aggiorna la posizione del popup
-    const popup = document.getElementById('popup');
-    const popupVelocity = document.getElementById('velocity');
-    const popupVisibility = document.getElementById('visibility');
-    const popupAltitude = document.getElementById('altitude');
-    const popupLatitude = document.getElementById('latitude');
-    const popupLongitude = document.getElementById('longitude');
-    const popupTime = document.getElementById('time');
+    const popup = document.getElementById("popup");
+    const popupVelocity = document.getElementById("velocity");
+    const popupVisibility = document.getElementById("visibility");
+    const popupAltitude = document.getElementById("altitude");
+    const popupLatitude = document.getElementById("latitude");
+    const popupLongitude = document.getElementById("longitude");
+    const popupTime = document.getElementById("time");
     const cartographic = Cesium.Cartographic.fromCartesian(position);
     const latitude = Cesium.Math.toDegrees(cartographic.latitude).toFixed(4);
     const longitude = Cesium.Math.toDegrees(cartographic.longitude).toFixed(4);
     const altitude = (cartographic.height / 1000).toFixed(3); // Altitudine in km
-    const velocity = Number(issDatas.velocity.toFixed(0)).toLocaleString('it-IT'); // Velocità in km/h
+    const velocity = Number(issDatas.velocity.toFixed(0)).toLocaleString("it-IT"); // Velocità in km/h
     const time = Math.floor(Date.now() / 1000); // Tempo in secondi
     const userTimeZoneOffset = new Date().getTimezoneOffset() * 60; // Offset in seconds
     const userTime = time - userTimeZoneOffset; // Adjust time to user's timezone
     const userHours = Math.floor(userTime / 3600) % 24; // Ore
     const userMinutes = Math.floor((userTime % 3600) / 60); // Minuti
     const userSeconds = userTime % 60; // Secondi
-    const formattedUserTime = `${String(userHours).padStart(2, '0')}:${String(userMinutes).padStart(2, '0')}:${String(userSeconds).padStart(2, '0')}`;
+    const formattedUserTime = `${String(userHours).padStart(2, "0")}:${String(userMinutes).padStart(2, "0")}:${String(userSeconds).padStart(2, "0")}`;
     const visibility = issDatas.visibility; // Visibilità in km
     popupTime.innerHTML = `${formattedUserTime}`;
     popupLatitude.innerHTML = `${latitude}°`;
@@ -345,8 +336,8 @@ function updatePopupPosition() {
     popup.style.top = `${popupCenterPosition.y}px`;
 
     // Aggiorna il contenuto del popup
-    
-    popup.style.display = 'flex';
+
+    popup.style.display = "flex";
 }
 
 // Avvia un ciclo di aggiornamento continuo
@@ -365,8 +356,8 @@ function stopPopupUpdate() {
     }
 
     // Nascondi il popup
-    const popup = document.getElementById('popup');
-    popup.style.display = 'none';
+    const popup = document.getElementById("popup");
+    popup.style.display = "none";
 }
 
 async function getFullOrbitPath() {
@@ -382,9 +373,9 @@ async function getFullOrbitPath() {
     const timestamps1 = [];
     const timestamps2 = [];
 
-    for (let i = -5400/2; i < 0; i += 150) {  // 5400 secondi = 90 minuti (orbita completa)
+    for (let i = -5400 / 2; i < 0; i += 150) { // 5400 secondi = 90 minuti (orbita completa)
         timestamps1.push(now + i);
-        timestamps2.push(now + i + 5400/2); // Aggiungi 90 minuti per la seconda metà dell'orbita
+        timestamps2.push(now + i + 5400 / 2); // Aggiungi 90 minuti per la seconda metà dell'orbita
     }
 
     const url1 = `https://api.wheretheiss.at/v1/satellites/25544/positions?timestamps=${timestamps1.join(",")}`;
@@ -395,7 +386,7 @@ async function getFullOrbitPath() {
     const data1 = await response1.json();
     const data2 = await response2.json();
     if (lastLat === 0 && lastLon === 0 && lastAlt === 0) {
-        const timestamps3 = now - ISSRefreshRate/1000;
+        const timestamps3 = now - ISSRefreshRate / 1000;
         const url3 = `https://api.wheretheiss.at/v1/satellites/25544/positions?timestamps=${timestamps3}`;
         const response3 = await fetch(url3);
         const data3 = await response3.json();
@@ -416,7 +407,7 @@ async function getFullOrbitPath() {
                 positions: startPosition && endPosition ? [startPosition, endPosition] : [],
                 width: 8,
                 material: new Cesium.PolylineArrowMaterialProperty(Cesium.Color.TOMATO),
-                clampToGround: false,  
+                clampToGround: false,
             },
         });
         orbitPathEntities.push(orbEntity);
@@ -448,12 +439,12 @@ async function updateISSPosition() {
     const { lat, lon, alt } = await getISSDataFromServer();
     // Creare entità ISS
     const issEntity = viewer.entities.add({
-        id: 'issEntity',
-        name: 'ISS',
-        description: 'International Space Station',
+        id: "issEntity",
+        name: "ISS",
+        description: "International Space Station",
         show: true,
         allowPicking: true,
-        position: Cesium.Cartesian3.fromDegrees(lon, lat, alt*1000),
+        position: Cesium.Cartesian3.fromDegrees(lon, lat, alt * 1000),
         model: {
             uri: "./models/ISS_stationary.glb",
             minimumPixelSize: 20000,
@@ -475,8 +466,8 @@ async function updateISSPosition() {
     });
 
     const issBigPing = viewer.entities.add({
-        id: 'issBigPing',
-        name: 'ISS Big Ping',
+        id: "issBigPing",
+        name: "ISS Big Ping",
         position: Cesium.Cartesian3.fromDegrees(lon, lat, 0),
         allowPicking: false,
         model: {
@@ -487,9 +478,9 @@ async function updateISSPosition() {
             allowPicking: false,
         },
     });
-    
-    issEntity.model.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(100000.0, alt*1000 + 10000000);
-    issBigPing.model.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(alt*1000 + 10500000, alt*1000000);
+
+    issEntity.model.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(100000.0, alt * 1000 + 10000000);
+    issBigPing.model.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(alt * 1000 + 10500000, alt * 1000000);
     orientateISS(issEntity, issBigPing, issPing, lon, lat, alt);
     lastLat = lat;
     lastLon = lon;
@@ -501,19 +492,19 @@ async function updateISSPosition() {
     // Aggiorna la posizione ogni 10 secondi
     setInterval(async () => {
         const { lat, lon, alt } = await getISSDataFromServer();
-        
+
         orientateISS(issEntity, issBigPing, issPing, lon, lat, alt);
 
         // Calcola l'orientamento verso le coordinate precedenti
         if (lastLat !== 0 && lastLon !== 0 && lastAlt !== 0) {
-            var lonDiff = (lon - lastLon);
-            var latDiff = (lat - lastLat);
-            var altDiff = (alt - lastAlt);
+            var lonDiff = lon - lastLon;
+            var latDiff = lat - lastLat;
+            var altDiff = alt - lastAlt;
             var lonStep = lonDiff / (ISSRefreshRate / fps);
             var latStep = latDiff / (ISSRefreshRate / fps);
             var altStep = altDiff / (ISSRefreshRate / fps);
             var pos = 1;
-            for (let i = 0; i < ISSRefreshRate - fps; i += 1000/fps) {
+            for (let i = 0; i < ISSRefreshRate - fps; i += 1000 / fps) {
                 setTimeout(() => {
                     var newLon = lastLon + lonStep * (i / fps);
                     var newLat = lastLat + latStep * (i / fps);
@@ -521,7 +512,7 @@ async function updateISSPosition() {
                     issEntity.position = Cesium.Cartesian3.fromDegrees(newLon, newLat, newAlt * 1000);
                     issPing.position = Cesium.Cartesian3.fromDegrees(newLon, newLat, 0);
                     issBigPing.position = Cesium.Cartesian3.fromDegrees(newLon, newLat, 0);
-                    updateInfoContainerPosition({latitude: newLat, longitude: newLon, altitude: newAlt});
+                    updateInfoContainerPosition({ latitude: newLat, longitude: newLon, altitude: newAlt });
                     preciseLat = newLat;
                     preciseLon = newLon;
                     preciseAlt = newAlt;
@@ -537,16 +528,16 @@ async function updateISSPosition() {
         const currentTime = Math.floor(Date.now() / 1000); // Timestamp attuale
         const timeDiff = currentTime - orbitpathTime; // Differenza di tempo in secondi
         const updateRate = 2700; // 45 minuti in secondi
-        if (timeDiff-updateRate >= 0) {
-            getFullOrbitPath();   
+        if (timeDiff - updateRate >= 0) {
+            getFullOrbitPath();
         }
     }, ISSRefreshRate);
 
     const tm3 = setTimeout(() => {
         viewer.camera.flyTo({
-            destination: Cesium.Cartesian3.fromDegrees(lon, lat, alt*1000 + 10000000),
+            destination: Cesium.Cartesian3.fromDegrees(lon, lat, alt * 1000 + 10000000),
             duration: 2,
-            complete: function() {
+            complete: function () {
             }
         });
     }, 2500);
@@ -567,7 +558,6 @@ viewer.scene.light = new Cesium.DirectionalLight({
     color: Cesium.Color.WHITE, // Colore della luce
     intensity: 2.0 // Intensità della luce
 });
-
 
 viewer.scene.debugShowFramesPerSecond = true; // Mostra i frame per secondo
 viewer.scene.fog.enabled = false; // Disabilita la nebbia
