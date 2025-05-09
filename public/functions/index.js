@@ -27,7 +27,6 @@
     const int1 = setInterval(() => {
         let loadingText = document.querySelector('.loading-text h1');
         const loadingscreen = document.querySelector('.loading-screen');
-        console.log(loadingscreen);
         loadingText.innerHTML += '.';
         if (loadingText.innerHTML.length > 10) {
             loadingText.innerHTML = 'Loading';

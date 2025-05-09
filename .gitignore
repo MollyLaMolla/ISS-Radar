@@ -4,3 +4,4 @@
 
 # Ignora la cartella dei pacchetti di dipendenze (per Node.js)
 node_modules/
+
